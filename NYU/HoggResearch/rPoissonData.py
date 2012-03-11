@@ -15,24 +15,6 @@ dGamma = float(args[3])
 seed = float(args[4])
 
 
-n = gamma * dt
-print("Ideal photon count: " + str(n))
-
-'''
-# Generates k value for
-kTest = np.random.poisson(n, 1)
-print("Generated k value: " + str(kTest))
-print("Gamma calculated from chosen k: " + str(kTest/dt))
-
-# generate fake set of data making k time data points between 0 and dt
-# usses a different seed each time but is based on the seed passed in args
-tData = np.zeros(kTest)
-for i in range(1, kTest):
-    random.seed(seed*i)
-    tData[i] = random.random() * dt
-print(tData)
-'''
-
 
 # Finds an ideal photon count through Riemann sum for each second and generates 
 # a number of photons based on a Poisson distribution. Then creates photon data  
