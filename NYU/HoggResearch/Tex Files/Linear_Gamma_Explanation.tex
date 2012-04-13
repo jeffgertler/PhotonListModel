@@ -1,0 +1,74 @@
+\documentclass[aps,letterpaper,10pt]{revtex4}
+
+\usepackage{graphicx}
+
+
+
+\begin{document}
+
+
+\begin{center}
+Jeffrey Gertler \\ \vspace{14pt}
+Advisor: Prof. David Hogg \\ \vspace{14pt}
+
+\end{center}
+
+%%%%%%%%%%%%
+\section{Introduction}
+\subsection{Objective}
+Create a set of data that approximates the times of photon emissions caused by a given gamma $\frac{photons}{time}$ value over a given $\Delta t$. Also allow for data sets where the gamma changes with time.
+
+
+\section{Current Solution}
+
+
+\subsection{Implementing a Changing Gamma}
+For a gamma that changes over time the main concept of the data generation is the same but broken into smaller sections. To find the ideal number of photons in a given  $\Delta t$ the program simply multiplied the gamma by the  $\Delta t$ which is the same as the integral of that linear function over  $\Delta t$. Similarly, for any function of gamma over time the ideal photon count over that total time will be the integral of that function over the given  $\Delta t$. A good approximation of the integral of a function is the Riemann sum of the function which breaks the integral into a number of small rectangles (this approximation is exact for a linear function).
+\vspace{3mm}
+
+With this in mind the problem of a changing gamma can easily be solved by breaking the  $\Delta t$ into many smaller time steps (currently the program uses time steps of 1 second). Over each smaller time step we find an experimental number of photons with the random.poisson() function and generate that number of photon times like before.
+\vspace{3mm}
+
+A significant advantage to this method is the ability to quickly adapt the program to non-linear functions. The only line of code that would need to be changed for a different function would be
+\begin{verbatim}
+idealPNum = int(gamma + (i+.5)*dGamma)
+\end{verbatim}
+Instead, any function could be plugged into the integer typecast, with the correct command line arguments, and the program would correctly generate photon times.
+
+\vspace{3mm}
+
+
+\section{Bin Size $\ll1$}
+Initially in the implementation of the changing gamma data generation I used Riemann sums with a width or bin size of 1 second. With this bin size, while small, depending on the gamma there could be a large number of photon times within this time step. This is significant because if there is a large number of photons within a given time period then the difference between a poisson random generator (as used with 1 second bins) and a simple random number generator becomes significant. When the bin size is small the difference between a poisson distribution and a random one is negligible. This shortening of the bin size also has the advantage of eliminating any need to take an integral of the function to increase accuracy.
+
+\section{Graphical Output}
+
+\begin{figure}[h!]
+\begin{center} \includegraphics[height=100mm]{linearData0.png} \caption{Data output with a slope of 0} \end{center}
+\vspace{3mm}
+\end{figure}
+
+\begin{figure}[h!]
+\begin{center} \includegraphics[height=100mm]{linearData1.png} \caption{Data output with a slope of 1} \end{center}
+\vspace{3mm}
+\end{figure}
+
+\begin{figure}[h!]
+\begin{center} \includegraphics[height=100mm]{linearData-1.png} \caption{Data output with a slope of -1} \end{center}
+\vspace{3mm}
+\end{figure}
+
+\section{Code}
+
+\begin{verbatim}
+for i in range(0, int(dt)):
+    idealPNum = int(gamma + (i+.5)*dGamma)
+    expPNum = np.random.poisson(idealPNum, 1)
+    for j in range(0, expPNum):
+        random.seed(seed*j*i)
+        tData = np.append(tData, random.random() + i)
+\end{verbatim}
+
+
+
+\end{document} 
