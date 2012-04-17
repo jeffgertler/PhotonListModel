@@ -1,7 +1,7 @@
 \documentclass[aps,letterpaper,10pt]{revtex4}
 
 \usepackage{graphicx}
-
+\usepackage{amsmath}
 
 
 \begin{document}
@@ -39,7 +39,28 @@ Instead, any function could be plugged into the integer typecast, with the corre
 
 
 \section{Bin Size $\ll1$}
-Initially in the implementation of the changing gamma data generation I used Riemann sums with a width or bin size of 1 second. With this bin size, while small, depending on the gamma there could be a large number of photon times within this time step. This is significant because if there is a large number of photons within a given time period then the difference between a poisson random generator (as used with 1 second bins) and a simple random number generator becomes significant. When the bin size is small the difference between a poisson distribution and a random one is negligible. This shortening of the bin size also has the advantage of eliminating any need to take an integral of the function to increase accuracy.
+Initially in the implementation of the changing gamma data generation I used Riemann sums with a width or bin size of 1 second. With this bin size, while small, depending on the gamma there could be a large number of photon times within this time step. This is significant because if there is a large number of photons within a given time period then the difference between a poisson random generator (as used with 1 second bins) and a simple random number generator becomes significant. When the bin size is small, to the point that there is only 0 or 1 photon in each bin, the difference between a poisson distribution and a random one is negligible. This shortening of the bin size also has the advantage of eliminating any need to take an integral of the function to increase accuracy.
+
+
+\section{Probability of Generating a Specific Bin Set}
+Now that we have generated the set of data using bins as described above, the task of finding the probability of getting a specific set of data given a specific rate (gamma) becomes significantly easier. Without the small bin sizes it would be necessary to find the probability of a set of data using the Poisson distribution but when there are only 1 or 0 photons in each bin this changes.\\
+
+Assuming there is only 0 or 1 photons in each bin, for any bin the chance of finding 1 photon is the rate of photon hits (gamma) divided by the time interval of the bin. Respectively the chance of finding 0 photons would then be $1\frac{gamma}{\Delta t}$. Now that we have these two possible probabilities for each bin we can combine them by treating them as independent probabilities and multiplying them together. The product of all these probabilities will be the probability of getting this exact set of filled and empty bins.\\
+
+\begin{displaymath}
+   P(bin) = \left\{
+     \begin{array}{lr}
+       \Gamma /\Delta t & : Photon\ \#\ in\ \Delta t = 0\\
+       1-\Gamma /\Delta t & : Photon\ \#\ in\ \Delta t = 1
+     \end{array}
+   \right.
+\end{displaymath}
+
+\begin{gather*}
+	P_\Gamma = \Pi_{i = 0}^{n} P(bin_i)\\
+\end{gather*}
+
+\vspace{3mm} 
 
 \section{Graphical Output}
 
