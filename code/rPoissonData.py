@@ -1,3 +1,12 @@
+'''
+this file is part of the Photon List Model project
+copyright 2012 Jeff Gertler
+
+### example usage:
+
+    python rPoissonData.py 10. 100. 5. 42
+'''
+
 import numpy as np
 import matplotlib.pyplot as plt
 import math
@@ -12,7 +21,7 @@ args = sys.argv
 gamma = float(args[1])
 dt = float(args[2])
 dGamma = float(args[3])
-seed = float(args[4])
+seed = int(args[4])
 
 
 
