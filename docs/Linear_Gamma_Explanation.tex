@@ -45,13 +45,13 @@ Initially in the implementation of the changing gamma data generation I used Rie
 \section{Probability of Generating a Specific Bin Set}
 Now that we have generated the set of data using bins as described above, the task of finding the probability of getting a specific set of data given a specific rate (gamma) becomes significantly easier. Without the small bin sizes it would be necessary to find the probability of a set of data using the Poisson distribution but when there are only 1 or 0 photons in each bin this changes.\\
 
-Assuming there is only 0 or 1 photons in each bin, for any bin the chance of finding 1 photon is the rate of photon hits (gamma) divided by the time interval of the bin. Respectively the chance of finding 0 photons would then be $1\frac{gamma}{\Delta t}$. Now that we have these two possible probabilities for each bin we can combine them by treating them as independent probabilities and multiplying them together. The product of all these probabilities will be the probability of getting this exact set of filled and empty bins.\\
+Assuming there is only 0 or 1 photons in each bin, for any bin the chance of finding 1 photon is the rate of photon hits (gamma) multiplied by the time interval of the bin. Respectively the chance of finding 0 photons would then be the remaining probability or $1-\Gamma\Delta t$. Now that we have these two possible probabilities for each bin we can combine them by treating them as independent probabilities and multiplying them together. The product of all these probabilities will be the probability of getting this exact set of filled and empty bins.\\
 
 \begin{displaymath}
    P(bin) = \left\{
      \begin{array}{lr}
-       \Gamma /\Delta t & : Photon\ \#\ in\ \Delta t = 0\\
-       1-\Gamma /\Delta t & : Photon\ \#\ in\ \Delta t = 1
+       \Gamma \Delta t & : Photon\ \#\ in\ \Delta t = 1\\
+       1-\Gamma \Delta t & : Photon\ \#\ in\ \Delta t = 0
      \end{array}
    \right.
 \end{displaymath}
