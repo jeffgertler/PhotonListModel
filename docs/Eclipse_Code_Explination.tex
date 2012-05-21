@@ -1,0 +1,98 @@
+\documentclass[aps,letterpaper,10pt]{revtex4}
+
+\usepackage{graphicx}
+\usepackage{amsmath}
+
+
+\begin{document}
+
+
+\begin{center}
+{\LARGE Photon List Model: Eclipse Photon List \\ \vspace{14pt}}
+Jeffrey Gertler \\ \vspace{14pt}
+Advisor: Prof. David Hogg \\ \vspace{14pt}
+
+\end{center}
+\vspace{5mm}
+
+%%%%%%%%%%%%
+\section{Introduction}
+\subsection{Objective}
+Build a function that generates the photon output rate at any time during an eclipse of a star by a planet. Using this function, create a random photon time list that fits the curve and then find the probability of that particular photon list given the original parameters of the eclipse.
+
+\vspace{3mm}
+
+
+
+\section{Current Solution}
+
+\subsection{Eclipse Function}
+The eclipse brightness function is primary based around the formula used to calculate the area of intersection between two circles. This is done by finding the two points of intersection, calculating the two radial sections described by the intersection points and then subtracting the triangular portions of these radial sections. To make the program more flexible I used the time of the middle of the eclipse and the velocity of the planet along with the offset of the orbits of the planet and the sun to calculate distance values at each time. Then I multiplied these areas by the brightness of the planet and star to find the total brightness. \\
+
+This code takes the approximation that both the planet and star have uniform brightness over the circular area visible. Where not exact this is a reasonable estimation to the brightness at any time especially considering that different planets and stars might have dramatically different gradients of brightness across their visible area.\\
+
+The python implementation is written bellow in the code section.
+
+\vspace{3mm}
+
+\subsection{Generating the Photon List}
+Once the function describing the eclipse brightness was finished the 
+
+
+
+\begin{displaymath}
+   P(bin) = \left\{
+     \begin{array}{lr}
+       \Gamma \Delta t & : Photon\ \#\ in\ \Delta t = 1\\
+       1-\Gamma \Delta t & : Photon\ \#\ in\ \Delta t = 0
+     \end{array}
+   \right.
+\end{displaymath}
+
+\begin{gather*}
+	P_\Gamma = \Pi_{i = 0}^{n} P(bin_i)\\
+\end{gather*}
+
+\vspace{3mm} 
+
+\section{Graphical Output}
+
+\begin{figure}[h!]
+%\begin{center} \includegraphics[height=100mm]{../code/linearData0.png} \caption{Data output with a slope of 0} \end{center}
+\vspace{3mm}
+\end{figure}
+
+
+\section{Code}
+\subsection{Eclipse Function}
+
+\begin{verbatim}
+def eclipse_brightness(d, R, r, o, B_st, B_bg):
+	d = np.sqrt(d**2+o**2)
+	if(d<=(R-r)): return B_bg*np.pi*R**2
+	
+	d1 = (d**2-r**2+R**2)/(2*d)
+	d2=d-d1
+	
+	A1=R**2 *np.arccos(d1/R)-d1*np.sqrt(R**2-d1**2)
+	A2=r**2 *np.arccos(d2/r)-d2*np.sqrt(r**2-d2**2)
+	return (np.pi*r**2 - (A1+A2))*B_st + B_bg*np.pi*R**2
+\end{verbatim}
+
+\vspace{3mm}
+
+\subsection{Generating the Photon List \& Calculating the List Probability}
+
+\begin{verbatim}
+tData = np.array([])
+data_probability = 1
+for i in range(0, len(t)):
+	if(random.random() <= b[i]*bin_size): 
+		tData =np.append(tData, t[i])
+		data_probability = data_probability*b[i]*bin_size
+	else: data_probability = data_probability*(1-b[i]*bin_size)
+\end{verbatim}
+
+
+
+\end{document} 
