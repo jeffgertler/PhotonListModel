@@ -1,4 +1,4 @@
-all: Linear_Gamma_Explanation.pdf
+all: Eclipse_Code_Explination.pdf
 
 %.pdf: %.tex
 	pdflatex $<
