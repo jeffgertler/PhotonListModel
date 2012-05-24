@@ -36,22 +36,9 @@ The python implementation is written bellow in the code section.
 \vspace{3mm}
 
 \subsection{Generating the Photon List}
-Once the function describing the eclipse brightness was finished the 
+With the eclipse function, generating the photon list is done in the exact same way as described in Linear\_Gamma\_Explination.tex . A small bin size is used to eliminate the use of a poisson and to simplify the probability calculations. At each time interval, the distance between planet and star is calculated and then plugged into the eclipse formula giving the photon rate in that interval and the probability of one photon driving in that interval.
 
 
-
-\begin{displaymath}
-   P(bin) = \left\{
-     \begin{array}{lr}
-       \Gamma \Delta t & : Photon\ \#\ in\ \Delta t = 1\\
-       1-\Gamma \Delta t & : Photon\ \#\ in\ \Delta t = 0
-     \end{array}
-   \right.
-\end{displaymath}
-
-\begin{gather*}
-	P_\Gamma = \Pi_{i = 0}^{n} P(bin_i)\\
-\end{gather*}
 
 \vspace{3mm} 
 
