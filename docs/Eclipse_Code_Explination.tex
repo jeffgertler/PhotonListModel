@@ -55,15 +55,15 @@ With the eclipse function, generating the photon list is done in the exact same 
 
 \begin{verbatim}
 def eclipse_brightness(d, R, r, o, B_st, B_bg):
-	d = np.sqrt(d**2+o**2)
-	if(d<=(R-r)): return B_bg*np.pi*R**2
+         d = np.sqrt(d**2+o**2)
+         if(d<=(R-r)): return B_bg*np.pi*R**2
 	
-	d1 = (d**2-r**2+R**2)/(2*d)
-	d2=d-d1
+         d1 = (d**2-r**2+R**2)/(2*d)
+         d2=d-d1
 	
-	A1=R**2 *np.arccos(d1/R)-d1*np.sqrt(R**2-d1**2)
-	A2=r**2 *np.arccos(d2/r)-d2*np.sqrt(r**2-d2**2)
-	return (np.pi*r**2 - (A1+A2))*B_st + B_bg*np.pi*R**2
+         A1=R**2 *np.arccos(d1/R)-d1*np.sqrt(R**2-d1**2)
+         A2=r**2 *np.arccos(d2/r)-d2*np.sqrt(r**2-d2**2)
+         return (np.pi*r**2 - (A1+A2))*B_st + B_bg*np.pi*R**2
 \end{verbatim}
 
 \vspace{3mm}
@@ -74,10 +74,10 @@ def eclipse_brightness(d, R, r, o, B_st, B_bg):
 tData = np.array([])
 data_probability = 1
 for i in range(0, len(t)):
-	if(random.random() <= b[i]*bin_size): 
-		tData =np.append(tData, t[i])
-		data_probability = data_probability*b[i]*bin_size
-	else: data_probability = data_probability*(1-b[i]*bin_size)
+         if(random.random() <= b[i]*bin_size): 
+                  tData =np.append(tData, t[i])
+                  data_probability = data_probability*b[i]*bin_size
+         else: data_probability = data_probability*(1-b[i]*bin_size)
 \end{verbatim}
 
 
