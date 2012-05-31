@@ -58,7 +58,9 @@ def listGenerator(t0, v, R, r, o, B_st, B_bg, seed):
 	return tData
 
 # 
-def logProbabilityCalculator(t, tData, b, bin_size):
+def logProbabilityCalculator(tData, t0, v, R, r, o, B_st, B_bg):
+	bin_size = 1./(B_st+B_bg)*.0001
+	t, b = eclipseCurve(t0, v, R, r, o, B_st, B_bg)
 	log_probability = 0
 	for i in range(0, len(t)):
 		if t[i] in tData: log_probability = log_probability - np.log(b[i]*bin_size)
@@ -80,8 +82,7 @@ seed = int(args[8])
 t, b = eclipseCurve(t0, v, R, r, o, B_st, B_bg)
 tData = listGenerator(t0, v, R, r, o, B_st, B_bg, seed)
 
-bin_size = 1./(B_st+B_bg)*.0001
-log_probability = logProbabilityCalculator(t, tData, b, bin_size)
+log_probability = logProbabilityCalculator(tData, t0, v, R, r, o, B_st, B_bg)
 print log_probability
 
 plt.figure(1)
