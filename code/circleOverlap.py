@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import sys
 import random as random
-
+import cProfile
 
 ''' 
 Example input: run circleOverlap.py 0 1 5 4 0 1 0 1234
@@ -85,6 +85,9 @@ tData = listGenerator(t0, v, R, r, o, B_st, B_bg, seed)
 log_probability = logProbabilityCalculator(tData, t0, v, R, r, o, B_st, B_bg)
 print log_probability
 
+cProfile.run('listGenerator(t0, v, R, r, o, B_st, B_bg, seed)')
+cProfile.run('logProbabilityCalculator(tData, t0, v, R, r, o, B_st, B_bg)')
+
 plt.figure(1)
 plt.subplot(211)
 plt.plot(t, b)
@@ -92,6 +95,4 @@ plt.plot(t, b)
 plt.subplot(212)
 plt.hist(tData, bins = len(tData)/10)
 
-
-plt.show()
-
+plt.savefig('eclipsePlot.png')
