@@ -5,19 +5,21 @@ import random as random
 import cProfile
 
 ''' 
-Example input: run circleOverlap.py 0 1 5 4 0 1 0 1234
+Example input: run circleOverlap.py 0 1 10 .2 0 1 0 1234
 
 returns the brightness of the the star when eclipsed
-	d: horizontal distance between them (accounts for negative distance)
+	t0: central time of the eclipse
+	v: relative velocity of the planet
 	R: radius of planet
-	r: radius of star (assumes r<R)
+	r: relative radius of star (assumes r<R)
 	o: vertical offset of centers of the circles
-	B_st: star brightness (assumed constant over visible area
+	B_st: star brightness (assumed constant over visible area)
 	B_bg: average background brightness
 '''
 
-def eclipseCurve(t0, v, R, r, o, B_st, B_bg):
-	bin_size = 1./(B_st+B_bg)*.0001
+def eclipseCurve(t0, v, R, r_ratio, o, B_st, B_bg):
+	r = R*r_ratio
+	bin_size = 1./(B_st+B_bg)*.001
 	dt = (R+r)/v
 	t = np.arange(t0-dt, t0+dt, bin_size)
 	
@@ -34,9 +36,10 @@ def eclipseCurve(t0, v, R, r, o, B_st, B_bg):
 			b[i] = (np.pi*r**2 - (A1+A2))*B_st + B_bg*np.pi*R**2
 	return t, b
 
-def listGenerator(t0, v, R, r, o, B_st, B_bg, seed):
+def listGenerator(t0, v, R, r_ratio, o, B_st, B_bg, seed):
+	r = R*r_ratio
 	random.seed(seed)
-	bin_size = 1./(B_st+B_bg)*.0001
+	bin_size = 1./(B_st+B_bg)*.001
 	dt = (R+r)/v
 	t = np.arange(t0-dt, t0+dt, bin_size)
 	
@@ -58,41 +61,62 @@ def listGenerator(t0, v, R, r, o, B_st, B_bg, seed):
 	return tData
 
 # 
-def logProbabilityCalculator(tData, t0, v, R, r, o, B_st, B_bg):
+def logProbabilityCalculator(tData, t0, v, R, r_ratio, o, B_st, B_bg):
 	bin_size = 1./(B_st+B_bg)*.0001
-	t, b = eclipseCurve(t0, v, R, r, o, B_st, B_bg)
+	t, b = eclipseCurve(t0, v, R, r_ratio, o, B_st, B_bg)
 	log_probability = 0
 	for i in range(0, len(t)):
 		if t[i] in tData: log_probability = log_probability - np.log(b[i]*bin_size)
 		else: log_probability = log_probability - np.log(1-b[i]*bin_size)
 	return log_probability
 
+def checkRadiusRatio(tData, t0, v, R, r_ratio, o, B_st, B_bg):
+	test_ratios = np.arange(0, 1.1, .5)
+	print test_ratios
+	test_probabilites = np.zeros(len(test_ratios))
+	for i in range(len(test_ratios)):
+		test_probabilites[i] = logProbabilityCalculator(tData, t0, v, R, test_ratios[i], o, B_st, B_bg)
+	return test_probabilites
+
+
 args = sys.argv
 
 t0 = float(args[1])
 v = float(args[2])
 R = float(args[3])
-r = float(args[4])
+r_ratio = float(args[4])
 o = float(args[5])
 B_st = float(args[6])
 B_bg = float(args[7])
 seed = int(args[8])
 
 
-t, b = eclipseCurve(t0, v, R, r, o, B_st, B_bg)
-tData = listGenerator(t0, v, R, r, o, B_st, B_bg, seed)
+t, b = eclipseCurve(t0, v, R, r_ratio, o, B_st, B_bg)
+tData = listGenerator(t0, v, R, r_ratio, o, B_st, B_bg, seed)
 
-log_probability = logProbabilityCalculator(tData, t0, v, R, r, o, B_st, B_bg)
-print log_probability
+true_probability = logProbabilityCalculator(tData, t0, v, R, r_ratio, o, B_st, B_bg)
+print true_probability
 
-cProfile.run('listGenerator(t0, v, R, r, o, B_st, B_bg, seed)')
-cProfile.run('logProbabilityCalculator(tData, t0, v, R, r, o, B_st, B_bg)')
+#test_ratios, test_probabilites = checkRadiusRatio(tData, t0, v, R, r_ratio, o, B_st, B_bg)
+test_ratios = np.arange(0, 1.1, .2)
+print test_ratios
+test_probabilites = np.zeros(len(test_ratios))
+for i in range(len(test_ratios)):
+	test_probabilites[i] = logProbabilityCalculator(tData, t0, v, R, test_ratios[i], o, B_st, B_bg)
+print test_probabilites
+
+#cProfile.run('listGenerator(t0, v, R, r_ratio, o, B_st, B_bg, seed)')
+#cProfile.run('logProbabilityCalculator(tData, t0, v, R, r_ratio, o, B_st, B_bg)')
 
 plt.figure(1)
-plt.subplot(211)
+plt.subplot(311)
 plt.plot(t, b)
 
-plt.subplot(212)
-plt.hist(tData, bins = len(tData)/10)
+plt.subplot(312)
+plt.hist(tData, bins = int(2*(R+R*r_ratio)/v))
+
+plt.subplot(313)
+plt.plot(test_ratios, test_probabilites, 'o')
 
 plt.savefig('eclipsePlot.png')
+plt.show()
